@@ -1,15 +1,9 @@
-//   GreenControl framework
+//   Lua Configuration Map Tool
 //
 // LICENSETEXT
 //
-//   Copyright (C) 2007-2009 : GreenSocs Ltd
-//   http://www.greensocs.com/ , email: info@greensocs.com
-//
-//   Developed by :
-//   
-//   Marcus Bartholomeu <bartho@greensocs.com>
-//     GreenSocs
-//     http://www.greensocs.com
+//   Copyright (C) 2007-2009 : Original authors
+//   Modified and simplified for general use
 //
 //
 // The contents of this file are subject to the licensing terms specified
@@ -43,9 +37,6 @@
 // default: do NOT define this!
 // #define USE_GETOPT
 
-// Removed SystemC support
-// #include "greencontrol/config.h"
-
 #ifdef USE_GETOPT
 # include <getopt.h>
 #else
@@ -57,9 +48,6 @@ extern "C" {
 #include "lualib.h"
 #include "lauxlib.h"
 }
-
-namespace gs {
-namespace cnf {
 
 #ifndef USE_GETOPT
   namespace po = boost::program_options;
@@ -200,9 +188,6 @@ namespace cnf {
      */
     int config(const char *config_file, bool reset = true)
     {
-      // Removed SystemC-specific debug macro
-      // GCNF_DUMP_N("LuaFileMap_Tool", "Read lua file '"<< config_file<<"'");
-
       // Clear maps for new configuration if reset is true
       if (reset) {
         mDoubleMap.clear();
@@ -480,8 +465,5 @@ namespace cnf {
     }
 
   };
-
-} // end namespace cnf
-} // end namespace gs
 
 #endif

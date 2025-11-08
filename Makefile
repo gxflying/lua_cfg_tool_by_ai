@@ -5,17 +5,14 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
 # Paths (adjust these according to your system setup)
-GREENCONTROL_HOME ?= /usr/local/greencontrol
 LUA_HOME ?= /usr
 
 # Include directories
 INCLUDES = -I. \
-           -I$(GREENCONTROL_HOME)/include \
            -I$(LUA_HOME)/include/lua5.3
 
 # Library directories
-LIBDIRS = -L$(GREENCONTROL_HOME)/lib \
-          -L$(LUA_HOME)/lib/x86_64-linux-gnu
+LIBDIRS = -L$(LUA_HOME)/lib/x86_64-linux-gnu
 
 # Libraries to link
 LIBS = -llua5.3 -ldl -lpthread

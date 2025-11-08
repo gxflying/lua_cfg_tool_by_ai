@@ -4,8 +4,6 @@
 
 #include "luafile_map_tool.h"
 
-using namespace gs::cnf;
-
 int main(int argc, char *argv[]) {
     // Use the singleton instance of the LuaFileMap_Tool
     const char* configFile = "config.lua";  // Default config file

@@ -1,6 +1,6 @@
 # LuaFileMap API
 
-This module provides a modified version of the LuaFile_Tool that stores Lua configuration parameters in std::map containers according to their types.
+This module provides a tool that reads Lua configuration files and stores parameters in std::map containers according to their types.
 
 ## Features
 
@@ -9,38 +9,69 @@ This module provides a modified version of the LuaFile_Tool that stores Lua conf
   - DoubleMap for floating-point values
   - LongMap for integer values
   - StringMap for string values
-- Provides accessors to retrieve the maps
+- Provides accessors to retrieve parameters by name
+- Cross-type lookup support: getDouble() can retrieve integer values and convert them, getInteger() can retrieve double values and convert them
+- Automatic conversion warnings to help understand data flow
 
 ## Usage
 
 ```cpp
-#include "greencontrol/gcnf/apis/luaFileMapApi/luafile_map_tool.h"
+#include "luafile_map_tool.h"
 
-// In your SystemC module or sc_main function:
+// Create an instance and load configuration
 LuaFileMap_Tool luareader("luareader");
 luareader.config("config.lua");
 
-// Access the maps
-const auto& doubleMap = luareader.getDoubleMap();
-const auto& longMap = luareader.getLongMap();
-const auto& stringMap = luareader.getStringMap();
+// Access individual parameters with type-specific getters
+double frequency;
+if (luareader.getDouble(frequency, "frequency")) {
+    std::cout << "Frequency: " << frequency << " Hz" << std::endl;
+}
 
-// Example of accessing values
-for (const auto& pair : doubleMap) {
-    std::cout << "Double param: " << pair.first << " = " << pair.second << std::endl;
+long cores;
+if (luareader.getInteger(cores, "cores")) {
+    std::cout << "Cores: " << cores << std::endl;
+}
+
+std::string processor;
+if (luareader.getString(processor, "processor")) {
+    std::cout << "Processor: " << processor << std::endl;
+}
+
+// Cross-type lookup examples:
+// Get an integer value as a double (automatically converted)
+double coresAsDouble;
+if (luareader.getDouble(coresAsDouble, "cores")) {
+    std::cout << "Cores as double: " << coresAsDouble << std::endl;
+}
+
+// Get a double value as an integer (truncated if needed)
+long frequencyAsLong;
+if (luareader.getInteger(frequencyAsLong, "frequency")) {
+    std::cout << "Frequency as long: " << frequencyAsLong << std::endl;
 }
 ```
 
+## Cross-Type Lookup
+
+The LuaFileMap_Tool now supports cross-type lookup with automatic conversion:
+
+- `getDouble()` can retrieve integer values from the LongMap and convert them to double
+- `getInteger()` can retrieve double values from the DoubleMap and convert them to integer (with truncation for non-integer values)
+- Conversion warnings are displayed to show when a value is found in a different type map:
+  ```
+  warning :  found $name  in other list :   origin valid ->  convert value
+  ```
+
 ## Dependencies
 
-This module requires the same dependencies as the original LuaFile_Tool:
-- SystemC
+This module requires:
 - Lua library
-- GreenControl framework
+- C++11 compatible compiler
 
 ## Integration
 
 To use this module in another project:
-1. Copy the entire `luaFileMapApi` directory
-2. Ensure your build system includes the necessary paths for SystemC, Lua, and GreenControl
-3. Link against the required libraries (SystemC, Lua)
+1. Copy the `luafile_map_tool.h` file to your project
+2. Ensure your build system includes the necessary paths for Lua
+3. Link against the required libraries (Lua)
